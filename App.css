@@ -1,0 +1,208 @@
+/* Estilização geral */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url('background-moto.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #000c1f; /* fallback azul escuro */
+  color: white;
+}
+
+/* Centralização e estilo do conteúdo principal */
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.App-content {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px 50px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+
+/* Barra de navegação fixada corretamente */
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: rgba(0, 119, 204, 0.85);
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 0;
+}
+
+.navbar ul li a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 6px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.navbar ul li a:hover,
+.navbar ul li a.active {
+  background-color: #0055aa;
+  transform: scale(1.1);
+}
+
+/* Responsividade da barra de navegação */
+@media (max-width: 768px) {
+  .navbar ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+}
+
+
+
+/* Títulos internos */
+h2, h3 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Título do menu */
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Navegação do Menu */
+nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  background-color: #007bff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #6c757d;
+}
+
+/* Botão voltar */
+button {
+  background-color: #6c757d;
+  color: rgb(255, 255, 255);
+  border: none;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.menu-back-button {
+  background-color: #6c757d;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 10px 20px; /* Coloque o padding novamente aqui */
+  margin-bottom: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.menu-back-button:hover {
+  background-color: #000000;
+}
+
+
+button:hover {
+  background-color: #000000;
+}
+
+/* Títulos internos */
+h2, h3 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Seções */
+.section-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 20px 0 10px;
+}
+
+/* Formulários */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Tabelas */
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.p-datatable {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.p-datatable th,
+.p-datatable td {
+  text-align: center;
+  padding: 10px 12px;
+}
+
+/* Botões PrimeReact */
+.p-button {
+  border-radius: 6px !important;
+}
+
