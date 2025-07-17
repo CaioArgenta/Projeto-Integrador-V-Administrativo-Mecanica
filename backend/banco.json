@@ -1,0 +1,31 @@
+{
+  "cidades": [
+    {
+      "id": "1",
+      "nomecidade": "Ourinhos"
+    },
+    {
+      "id": "2",
+      "nomecidade": "Jacarezinho"
+    },
+    {
+      "id": "3",
+      "nomecidade": "Chavantes"
+    },
+    {
+      "id": "4",
+      "nomecidade": "Ipaussu"
+    },
+    {
+      "id": "5",
+      "nomecidade": "Curitiba"
+    }
+  ],
+  "clientes": [
+    {
+      "id": "ad89",
+      "nome": "Caio Argenta De Oliveira",
+      "endereco": "Rua Belmiro Ribeiro da Silva     Cohab"
+    }
+  ]
+}

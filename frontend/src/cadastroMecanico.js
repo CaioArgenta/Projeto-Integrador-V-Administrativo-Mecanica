@@ -104,8 +104,6 @@ const CadastroMecanico = () => {
       if (!formData.cpf.trim()) newErrors.cpf = "Campo obrigatório";
       else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(formData.cpf)) newErrors.cpf = "CPF inválido";
 
-      if (formData.rg && !/^\d+$/.test(formData.rg));
-
       if (formData.contato && !/^\+\d{2} \(\d{2}\) \d{5}-\d{4}$/.test(formData.contato)) newErrors.contato = "Número inválido";
 
       setErrors(newErrors);
@@ -156,6 +154,8 @@ const CadastroMecanico = () => {
           await axios.post('http://localhost:4000/mecanicos', formData);
         }
 
+        const response = await axios.get('http://localhost:4000/mecanicos');
+        setMecanicos(response.data);
         setFormData({
           nomeMecanico: "",
           dataNascimento: "",
@@ -166,8 +166,6 @@ const CadastroMecanico = () => {
           valorSalario: "",
           comissao: "",
         });
-        const response = await axios.get('http://localhost:4000/mecanicos');
-        setMecanicos(response.data);
         setIsModalVisible(false);
         setEditingMecanico(null);
       } catch (error) {
@@ -212,18 +210,29 @@ const CadastroMecanico = () => {
     <div>
       <h2>Lista de Mecânicos</h2>
       <Button
-        label="Adicionar"
+        label="Novo Cadastro de Mecânico"
+        icon="pi pi-plus"
         onClick={() => { setIsModalVisible(true); setEditingMecanico(null); }}
+        style={{ marginBottom: '1rem' }}
       />
-      <DataTable value={mecanicos} showGridlines tableStyle={{ minWidth: '50rem' }}>
-        <Column field="nomeMecanico" header="Nome" />
-        <Column field="dataNascimento" header="Data de Nascimento" />
-        <Column field="cpf" header="CPF" />
-        <Column field="rg" header="RG" />
-        <Column field="enderecoResidencial" header="Endereço Residencial" />
-        <Column field="contato" header="Contato" />
-        <Column field="valorSalario" header="Salário" />
-        <Column field="comissao" header="Comissão (%)" />
+      <DataTable
+        value={mecanicos}
+        showGridlines
+        paginator
+        rows={10}
+        rowsPerPageOptions={[5, 10, 20]}
+        tableStyle={{ minWidth: '50rem' }}
+        removableSort
+        globalFilterFields={['nomeMecanico', 'cpf', 'rg', 'enderecoResidencial', 'contato']}
+      >
+        <Column field="nomeMecanico" header="Nome" sortable filter filterPlaceholder="Filtrar por nome" />
+        <Column field="dataNascimento" header="Data de Nascimento" sortable filter filterPlaceholder="Filtrar por data" />
+        <Column field="cpf" header="CPF" sortable filter filterPlaceholder="Filtrar por CPF" />
+        <Column field="rg" header="RG" sortable filter filterPlaceholder="Filtrar por RG" />
+        <Column field="enderecoResidencial" header="Endereço Residencial" sortable filter filterPlaceholder="Filtrar por endereço" />
+        <Column field="contato" header="Contato" sortable filter filterPlaceholder="Filtrar por contato" />
+        <Column field="valorSalario" header="Salário" sortable filter filterPlaceholder="Filtrar por salário" />
+        <Column field="comissao" header="Comissão (%)" sortable filter filterPlaceholder="Filtrar por comissão" />
         <Column header="Ações" body={actionBodyTemplate} />
       </DataTable>
       <Dialog

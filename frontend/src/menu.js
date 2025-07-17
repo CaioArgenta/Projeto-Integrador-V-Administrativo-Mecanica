@@ -3,7 +3,10 @@ import AgendamentoServicos from "./ordemDeServico";
 import CadastroMecanico from "./cadastroMecanico";
 import ContasReceberPorCliente from "./contasReceberCliente";
 import CadastroClientesForm from "./cadastroCliente";
-import "./App.css"; // Arquivo CSS atualizado
+import "./App.css"; 
+
+
+//npx json-server --watch bancoPI.json -p 4000
 
 function NavBar() {
   return (

@@ -4,7 +4,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
@@ -77,7 +77,7 @@ const AppContent = () => {
       enderecoResidencial: "Endereço Residencial",
       contato: "Contato"
     };
-    
+
     useEffect(() => {
       if (editingClient) setFormData(editingClient);
     }, [editingClient]);
@@ -104,8 +104,7 @@ const AppContent = () => {
       let newValue = value;
 
       if (name === "cpfCnpj") {
-        newValue = value.replace(/\D/g, '');
-        newValue = newValue
+        newValue = value.replace(/\D/g, '')
           .replace(/(\d{3})(\d)/, '$1.$2')
           .replace(/(\d{3})(\d)/, '$1.$2')
           .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
@@ -113,8 +112,7 @@ const AppContent = () => {
       }
 
       if (name === "contato") {
-        newValue = value.replace(/\D/g, '');
-        newValue = newValue
+        newValue = value.replace(/\D/g, '')
           .replace(/^(\d{2})(\d)/g, '+$1 ($2')
           .replace(/(\d{2})(\d)/, '$1) $2')
           .replace(/(\d{5})(\d)/, '$1-$2')
@@ -148,6 +146,7 @@ const AppContent = () => {
 
         setIsModalVisible(false);
         setEditingClient(null);
+
         const response = await axios.get('http://localhost:4000/clientes');
         setClients(response.data);
       } catch (error) {
@@ -166,7 +165,7 @@ const AppContent = () => {
               value={formData[field]}
               onChange={handleChange}
             />
-            {errors[field] && <p style={{ color: "red", fontSize: "14px", marginTop: "5px" }}>{errors[field]}</p>}
+            {errors[field] && <p className="error-message">{errors[field]}</p>}
           </div>
         ))}
         <div className="form-buttons">
@@ -180,14 +179,25 @@ const AppContent = () => {
   return (
     <div>
       <h2>Lista de Clientes</h2>
-      <Button label="Adicionar" onClick={() => { setIsModalVisible(true); setEditingClient(null); }} />
-      <DataTable value={clients} tableStyle={{ minWidth: '50rem' }}>
-        <Column field="nome" header="Nome" />
-        <Column field="dataNascimento" header="Data Nascimento" />
-        <Column field="cpfCnpj" header="CPF/CNPJ" />
-        <Column field="rg" header="RG" />
-        <Column field="enderecoResidencial" header="Endereço Residencial" />
-        <Column field="contato" header="Contato" />
+      <div className="table-header">
+        <Button label="Novo Cadastro de Cliente"
+        icon="pi pi-plus"
+        onClick={() => { setIsModalVisible(true); setEditingClient(null); }} />
+      </div>
+      <DataTable
+        value={clients}
+        paginator rows={5} rowsPerPageOptions={[5, 10, 20]}
+        showGridlines
+        tableStyle={{ minWidth: '50rem' }}
+        sortMode="multiple"
+        emptyMessage="Nenhum cliente encontrado."
+      >
+        <Column field="nome" header="Nome" sortable filter />
+        <Column field="dataNascimento" header="Data Nascimento" sortable filter />
+        <Column field="cpfCnpj" header="CPF/CNPJ" sortable filter />
+        <Column field="rg" header="RG" sortable filter />
+        <Column field="enderecoResidencial" header="Endereço Residencial" sortable filter />
+        <Column field="contato" header="Contato" sortable filter />
         <Column header="Ações" body={actionBodyTemplate} />
       </DataTable>
       <Dialog visible={isModalVisible} style={{ width: '50%' }} onHide={() => { setIsModalVisible(false); setEditingClient(null); }} header="Cadastro de Cliente">
