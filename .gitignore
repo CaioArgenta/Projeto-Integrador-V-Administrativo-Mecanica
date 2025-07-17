@@ -2,3 +2,4 @@ git rm -r --cached node_modules
 git rm -r --cached frontend/node_modules
 git rm -r --cached backend/node_modules
 git rm --cached frontend/.cache/default-development/0.pack
+git rm --cached frontend/node_modules/.cache/default-development/0.pack
