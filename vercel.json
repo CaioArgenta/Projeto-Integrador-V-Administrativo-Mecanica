@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "frontend": {
+      "source": "frontend",
+      "framework": "vite"
+    },
+    "backend": {
+      "source": "backend",
+      "framework": "node"
+    }
+  }
+}
