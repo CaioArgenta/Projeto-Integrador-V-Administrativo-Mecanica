@@ -3,9 +3,7 @@ import AgendamentoServicos from "./ordemDeServico";
 import CadastroMecanico from "./cadastroMecanico";
 import Caixa from "./caixa";
 import CadastroClientesForm from "./cadastroCliente";
-import "./App.css"; 
-
-
+import "./App.css";
 
 //npx json-server --watch bancoPI.json -p 4000
 
@@ -13,10 +11,26 @@ function NavBar() {
   return (
     <nav className="navbar">
       <ul>
-        <li><NavLink to="/cadastro-cliente" activeClassName="active">Clientes</NavLink></li>
-        <li><NavLink to="/cadastro-mecanico" activeClassName="active">Mecânicos</NavLink></li>
-        <li><NavLink to="/agendamento-servicos" activeClassName="active">Agendamentos</NavLink></li>
-        <li><NavLink to="/caixa" activeClassName="active">Caixa</NavLink></li>
+        <li>
+          <NavLink to="/cadastro-cliente" className={({ isActive }) => isActive ? "active" : ""}>
+            Clientes
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/cadastro-mecanico" className={({ isActive }) => isActive ? "active" : ""}>
+            Mecânicos
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/agendamento-servicos" className={({ isActive }) => isActive ? "active" : ""}>
+            Agendamentos
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/caixa" className={({ isActive }) => isActive ? "active" : ""}>
+            Caixa
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );

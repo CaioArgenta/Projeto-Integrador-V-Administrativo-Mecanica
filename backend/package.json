@@ -1,10 +1,15 @@
 {
-  "name": "json-server-api",
+  "name": "backend",
   "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "start": "json-server --watch bancoPI.json --port 4000"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "json-server": "^0.17.0"
+    "json-server": "^1.0.0-beta.3"
   }
 }
