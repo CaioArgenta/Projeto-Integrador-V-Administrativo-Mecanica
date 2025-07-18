@@ -6,10 +6,11 @@
     "start": "concurrently \"npm start --prefix frontend\" \"npm start --prefix backend\""
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+  "concurrently": "^9.0.0"
   },
   "dependencies": {
-    "@okta/okta-signin-widget": "^7.33.2",
-    "json-server": "^1.0.0-beta.3"
+  "@okta/okta-signin-widget": "^7.37.0",
+  "json-server": "^1.0.3"
   }
+
 }
