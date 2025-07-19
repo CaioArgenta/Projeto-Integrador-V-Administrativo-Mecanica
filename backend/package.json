@@ -4,12 +4,13 @@
   "description": "Backend com JSON Server para projeto de oficina mecânica",
   "main": "index.js",
   "scripts": {
-    "start": "json-server --host 0.0.0.0 --watch bancoPI.json --port $PORT"
+    "start": "./start.sh"
   },
   "keywords": [],
   "author": "Caio Argenta",
   "license": "MIT",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "json-server": "^0.17.4"
   }
 }
