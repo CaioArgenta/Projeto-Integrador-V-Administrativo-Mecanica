@@ -1,14 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend com JSON Server para projeto de oficina mecânica",
   "main": "index.js",
   "scripts": {
-  "start": "json-server --watch bancoPI.json --port $PORT"
+    "start": "json-server --watch bancoPI.json --port ${PORT:-4000}"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Caio Argenta",
+  "license": "MIT",
   "dependencies": {
     "json-server": "^0.17.4"
   }
