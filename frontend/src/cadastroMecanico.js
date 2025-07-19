@@ -38,7 +38,7 @@ const CadastroMecanico = () => {
   useEffect(() => {
     const fetchMecanicos = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/mecanicos');
+        const response = await axios.get('https://projeto-integrador-v-administrativo.onrender.com/mecanicos');
         setMecanicos(response.data);
       } catch (error) {
         console.error('Erro ao obter mecânicos da API:', error);
@@ -49,7 +49,7 @@ const CadastroMecanico = () => {
 
   const excluirMecanico = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/mecanicos/${id}`);
+      await axios.delete(`https://projeto-integrador-v-administrativo.onrender.com/mecanicos/${id}`);
       setMecanicos(mecanicos.filter((mec) => mec.id !== id));
     } catch (error) {
       console.error("Erro ao excluir o mecânico:", error);
@@ -149,12 +149,12 @@ const CadastroMecanico = () => {
 
       try {
         if (editingMecanico) {
-          await axios.put(`http://localhost:4000/mecanicos/${editingMecanico.id}`, formData);
+          await axios.put(`https://projeto-integrador-v-administrativo.onrender.com/mecanicos/${editingMecanico.id}`, formData);
         } else {
-          await axios.post('http://localhost:4000/mecanicos', formData);
+          await axios.post('https://projeto-integrador-v-administrativo.onrender.com/mecanicos', formData);
         }
 
-        const response = await axios.get('http://localhost:4000/mecanicos');
+        const response = await axios.get('https://projeto-integrador-v-administrativo.onrender.com/mecanicos');
         setMecanicos(response.data);
         setFormData({
           nomeMecanico: "",

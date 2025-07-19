@@ -154,9 +154,9 @@ const AgendamentoForm = ({
 
     try {
       if (editingAgendamento) {
-        await axios.put(`http://localhost:4000/ordemDeServico/${editingAgendamento.id}`, formData);
+        await axios.put(`https://projeto-integrador-v-administrativo.onrender.com/ordemDeServico/${editingAgendamento.id}`, formData);
       } else {
-        await axios.post("http://localhost:4000/ordemDeServico", formData);
+        await axios.post("https://projeto-integrador-v-administrativo.onrender.com/ordemDeServico", formData);
       }
       fetchAgendamentos();
       setIsModalVisible(false);
@@ -322,9 +322,9 @@ const AgendamentoServicos = () => {
   const fetchAllData = async () => {
     try {
       const [ordemRes, clienteRes, mecanicoRes] = await Promise.all([
-        axios.get("http://localhost:4000/ordemDeServico"),
-        axios.get("http://localhost:4000/clientes"),
-        axios.get("http://localhost:4000/mecanicos")
+        axios.get("https://projeto-integrador-v-administrativo.onrender.com/ordemDeServico"),
+        axios.get("https://projeto-integrador-v-administrativo.onrender.com/clientes"),
+        axios.get("https://projeto-integrador-v-administrativo.onrender.com/mecanicos")
       ]);
 
       setAgendamentos(ordemRes.data);
@@ -351,7 +351,7 @@ const AgendamentoServicos = () => {
   const deleteAgendamento = async (id) => {
     if (window.confirm("Deseja realmente excluir este agendamento?")) {
       try {
-        await axios.delete(`http://localhost:4000/ordemDeServico/${id}`);
+        await axios.delete(`https://projeto-integrador-v-administrativo.onrender.com/ordemDeServico/${id}`);
         fetchAllData();
       } catch (error) {
         console.error("Erro ao excluir agendamento:", error);

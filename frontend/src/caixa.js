@@ -70,9 +70,9 @@ export default function Caixa() {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:4000/clientes").then((res) => setClientes(res.data));
-    axios.get("http://localhost:4000/ordemDeServico").then((res) => setOrdens(res.data));
-    axios.get("http://localhost:4000/caixa").then((res) => setPagamentos(res.data));
+    axios.get("https://projeto-integrador-v-administrativo.onrender.com").then((res) => setClientes(res.data));
+    axios.get("https://projeto-integrador-v-administrativo.onrender.com").then((res) => setOrdens(res.data));
+    axios.get("https://projeto-integrador-v-administrativo.onrender.com/caixa").then((res) => setPagamentos(res.data));
   }, []);
 
   const selecionarCliente = (clienteId) => {
@@ -172,7 +172,7 @@ export default function Caixa() {
 
           const novoTotalPago = totalPago + parseFloat(formData.valorPago);
 
-          return axios.post(`http://localhost:4000/caixa`, {
+          return axios.post(`https://projeto-integrador-v-administrativo.onrender.com/caixa`, {
             idOrdemDeServico: ordem.id,
             valorServico: ordem.valorServico,
             valorPago: formData.valorPago,
@@ -188,7 +188,7 @@ export default function Caixa() {
 
       alert("Recebimento confirmado com sucesso!");
 
-      const pagamentosAtualizados = await axios.get("http://localhost:4000/caixa");
+      const pagamentosAtualizados = await axios.get("https://projeto-integrador-v-administrativo.onrender.com/caixa");
       setPagamentos(pagamentosAtualizados.data);
       setSelectedOrdens([]);
       setFormData({

@@ -19,7 +19,7 @@ const AppContent = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/clientes');
+        const response = await axios.get('https://projeto-integrador-v-administrativo.onrender.com/clientes');
         setClients(response.data);
       } catch (error) {
         console.error('Erro ao obter clientes:', error);
@@ -30,7 +30,7 @@ const AppContent = () => {
 
   const excluirCliente = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/clientes/${id}`);
+      await axios.delete(`https://projeto-integrador-v-administrativo.onrender.com/clientes/${id}`);
       setClients(clients.filter((cliente) => cliente.id !== id));
     } catch (error) {
       console.error("Erro ao excluir o cliente:", error);
@@ -139,15 +139,15 @@ const AppContent = () => {
 
       try {
         if (editingClient) {
-          await axios.put(`http://localhost:4000/clientes/${editingClient.id}`, formData);
+          await axios.put(`https://projeto-integrador-v-administrativo.onrender.com/clientes/${editingClient.id}`, formData);
         } else {
-          await axios.post('http://localhost:4000/clientes', formData);
+          await axios.post('https://projeto-integrador-v-administrativo.onrender.com/clientes', formData);
         }
 
         setIsModalVisible(false);
         setEditingClient(null);
 
-        const response = await axios.get('http://localhost:4000/clientes');
+        const response = await axios.get('https://projeto-integrador-v-administrativo.onrender.com/clientes');
         setClients(response.data);
       } catch (error) {
         console.error('Erro ao salvar dados:', error);
