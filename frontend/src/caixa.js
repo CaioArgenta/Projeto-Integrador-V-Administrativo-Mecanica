@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -11,46 +12,46 @@ import "./App.css";
 import { locale, addLocale } from "primereact/api";
 
 addLocale('pt', {
-    startsWith: 'Começa com',
-    contains: 'Contém',
-    notContains: 'Não contém',
-    endsWith: 'Termina com',
-    equals: 'Igual',
-    notEquals: 'Diferente',
-    noFilter: 'Sem Filtro',
-    filter: 'Filtrar',
-    lt: 'Menor que',
-    lte: 'Menor ou igual a',
-    gt: 'Maior que',
-    gte: 'Maior ou igual a',
-    dateIs: 'Data é',
-    dateIsNot: 'Data não é',
-    dateBefore: 'Data antes de',
-    dateAfter: 'Data depois de',
-    clear: 'Limpar',
-    apply: 'Aplicar',
-    matchAll: 'Corresponde a todos',
-    matchAny: 'Corresponde a qualquer',
-    addRule: 'Adicionar Regra',
-    removeRule: 'Remover Regra',
-    accept: 'Sim',
-    reject: 'Não',
-    choose: 'Escolher',
-    upload: 'Upload',
-    cancel: 'Cancelar',
-    dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
-    dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
-    dayNamesMin: ["Do","Se","Te","Qa","Qi","Sx","Sa"],
-    monthNames: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
-    monthNamesShort: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
-    today: 'Hoje',
-    weekHeader: 'Sem',
-    firstDayOfWeek: 0,
-    dateFormat: 'dd/mm/yy',
-    weak: 'Fraco',
-    medium: 'Médio',
-    strong: 'Forte',
-    passwordPrompt: 'Digite uma senha'
+  startsWith: 'Começa com',
+  contains: 'Contém',
+  notContains: 'Não contém',
+  endsWith: 'Termina com',
+  equals: 'Igual',
+  notEquals: 'Diferente',
+  noFilter: 'Sem Filtro',
+  filter: 'Filtrar',
+  lt: 'Menor que',
+  lte: 'Menor ou igual a',
+  gt: 'Maior que',
+  gte: 'Maior ou igual a',
+  dateIs: 'Data é',
+  dateIsNot: 'Data não é',
+  dateBefore: 'Data antes de',
+  dateAfter: 'Data depois de',
+  clear: 'Limpar',
+  apply: 'Aplicar',
+  matchAll: 'Corresponde a todos',
+  matchAny: 'Corresponde a qualquer',
+  addRule: 'Adicionar Regra',
+  removeRule: 'Remover Regra',
+  accept: 'Sim',
+  reject: 'Não',
+  choose: 'Escolher',
+  upload: 'Upload',
+  cancel: 'Cancelar',
+  dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+  dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+  dayNamesMin: ["Do","Se","Te","Qa","Qi","Sx","Sa"],
+  monthNames: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
+  monthNamesShort: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+  today: 'Hoje',
+  weekHeader: 'Sem',
+  firstDayOfWeek: 0,
+  dateFormat: 'dd/mm/yy',
+  weak: 'Fraco',
+  medium: 'Médio',
+  strong: 'Forte',
+  passwordPrompt: 'Digite uma senha'
 });
 
 locale('pt');
@@ -72,59 +73,48 @@ export default function Caixa() {
   });
 
   useEffect(() => {
-    // Função para garantir que os dados sejam arrays
     const fetchData = async () => {
       try {
         const resClientes = await axios.get(`${API_URL}/clientes`);
         setClientes(Array.isArray(resClientes.data) ? resClientes.data : []);
-
         const resOrdens = await axios.get(`${API_URL}/ordemDeServico`);
         setOrdens(Array.isArray(resOrdens.data) ? resOrdens.data : []);
-
         const resPagamentos = await axios.get(`${API_URL}/caixa`);
         setPagamentos(Array.isArray(resPagamentos.data) ? resPagamentos.data : []);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
+      } catch {
         setClientes([]);
         setOrdens([]);
         setPagamentos([]);
       }
     };
-
     fetchData();
   }, []);
 
   const selecionarCliente = (clienteId) => {
-    const cliente = Array.isArray(clientes)
-      ? clientes.find((cli) => cli.id === clienteId)
-      : null;
+    const cliente = Array.isArray(clientes) ? clientes.find(c => c.id === clienteId) : null;
     setClienteSelecionado(cliente || null);
     setSelectedOrdens([]);
   };
 
   const handleDropdownChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const ordensDoCliente = clienteSelecionado && Array.isArray(ordens)
-    ? ordens.filter((ordem) => ordem.codigoCliente === clienteSelecionado.id)
+    ? ordens.filter(o => o.codigoCliente === clienteSelecionado.id)
     : [];
 
   const pagamentosDoCliente = clienteSelecionado && Array.isArray(pagamentos)
-    ? pagamentos.filter((pag) =>
-        ordensDoCliente.some((ordem) => ordem.id === pag.idOrdemDeServico)
+    ? pagamentos.filter(p =>
+        ordensDoCliente.some(o => o.id === p.idOrdemDeServico)
       )
     : [];
 
   const ordensSemPagamento = Array.isArray(ordensDoCliente) && Array.isArray(pagamentosDoCliente)
-    ? ordensDoCliente.filter((ordem) => {
+    ? ordensDoCliente.filter(ordem => {
         const totalPago = pagamentosDoCliente
-          .filter((pag) => pag.idOrdemDeServico === ordem.id)
+          .filter(pag => pag.idOrdemDeServico === ordem.id)
           .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
-
         return totalPago < parseFloat(ordem.valorServico || 0);
       })
     : [];
@@ -132,9 +122,8 @@ export default function Caixa() {
   const saldoDevedor = Array.isArray(ordensDoCliente) && Array.isArray(pagamentosDoCliente)
     ? ordensDoCliente.reduce((total, ordem) => {
         const totalPago = pagamentosDoCliente
-          .filter((pag) => pag.idOrdemDeServico === ordem.id)
+          .filter(pag => pag.idOrdemDeServico === ordem.id)
           .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
-
         return total + (parseFloat(ordem.valorServico || 0) - totalPago);
       }, 0)
     : 0;
@@ -142,9 +131,8 @@ export default function Caixa() {
   const totalDevedores = Array.isArray(ordens) && Array.isArray(pagamentos)
     ? ordens.reduce((total, ordem) => {
         const totalPago = pagamentos
-          .filter((pag) => pag.idOrdemDeServico === ordem.id)
+          .filter(pag => pag.idOrdemDeServico === ordem.id)
           .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
-
         return total + (parseFloat(ordem.valorServico || 0) - totalPago);
       }, 0)
     : 0;
@@ -154,11 +142,11 @@ export default function Caixa() {
     : 0;
 
   const clientesDevedores = Array.isArray(clientes) && Array.isArray(ordens) && Array.isArray(pagamentos)
-    ? clientes.filter((cliente) => {
-        const ordensCliente = ordens.filter((ordem) => ordem.codigoCliente === cliente.id);
+    ? clientes.filter(cliente => {
+        const ordensCliente = ordens.filter(o => o.codigoCliente === cliente.id);
         const totalDevido = ordensCliente.reduce((total, ordem) => {
           const totalPago = pagamentos
-            .filter((pag) => pag.idOrdemDeServico === ordem.id)
+            .filter(pag => pag.idOrdemDeServico === ordem.id)
             .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
           return total + (parseFloat(ordem.valorServico || 0) - totalPago);
         }, 0);
@@ -168,10 +156,9 @@ export default function Caixa() {
 
   const handleNumeroParcelasChange = (e) => {
     const value = e.target.value;
-
     if (/^[\d/]*$/.test(value)) {
       if (!value.includes('/')) {
-        setFormData((prev) => ({ ...prev, numeroParcelas: prev.numeroParcelas }));
+        setFormData(prev => ({ ...prev, numeroParcelas: prev.numeroParcelas }));
       } else {
         setFormData({ ...formData, numeroParcelas: value });
       }
@@ -181,44 +168,29 @@ export default function Caixa() {
   };
 
   const handleConfirm = async () => {
-    if (
-      !clienteSelecionado ||
-      !formData.formaPagamento ||
-      !formData.pagamento ||
-      !formData.valorPago ||
-      selectedOrdens.length === 0
-    ) {
+    if (!clienteSelecionado || !formData.formaPagamento || !formData.pagamento || !formData.valorPago || selectedOrdens.length === 0) {
       alert("Preencha todos os campos e selecione ao menos uma O.S.");
       return;
     }
-
     try {
       const numeroParcelas = formData.numeroParcelas;
-
-      await Promise.all(
-        selectedOrdens.map((ordem) => {
-          const totalPago = pagamentosDoCliente
-            .filter((pag) => pag.idOrdemDeServico === ordem.id)
-            .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
-
-          const novoTotalPago = totalPago + parseFloat(formData.valorPago);
-
-          return axios.post(`${API_URL}/caixa`, {
-            idOrdemDeServico: ordem.id,
-            valorServico: ordem.valorServico,
-            valorPago: formData.valorPago,
-            emissao: formData.pagamento,
-            numeroParcelas: numeroParcelas,
-            formaPagamento: formData.formaPagamento,
-            observacoes: formData.observacoes,
-            situacaoCaixa:
-              novoTotalPago >= parseFloat(ordem.valorServico) ? "Pago" : "Parcial",
-          });
-        })
-      );
-
+      await Promise.all(selectedOrdens.map(ordem => {
+        const totalPago = pagamentosDoCliente
+          .filter(pag => pag.idOrdemDeServico === ordem.id)
+          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+        const novoTotalPago = totalPago + parseFloat(formData.valorPago);
+        return axios.post(`${API_URL}/caixa`, {
+          idOrdemDeServico: ordem.id,
+          valorServico: ordem.valorServico,
+          valorPago: formData.valorPago,
+          emissao: formData.pagamento,
+          numeroParcelas,
+          formaPagamento: formData.formaPagamento,
+          observacoes: formData.observacoes,
+          situacaoCaixa: novoTotalPago >= parseFloat(ordem.valorServico) ? "Pago" : "Parcial",
+        });
+      }));
       alert("Recebimento confirmado com sucesso!");
-
       const pagamentosAtualizados = await axios.get(`${API_URL}/caixa`);
       setPagamentos(Array.isArray(pagamentosAtualizados.data) ? pagamentosAtualizados.data : []);
       setSelectedOrdens([]);
@@ -229,8 +201,7 @@ export default function Caixa() {
         numeroParcelas: "1/1",
         observacoes: "",
       });
-    } catch (error) {
-      console.error("Erro ao confirmar pagamento:", error);
+    } catch {
       alert("Erro ao confirmar pagamento. Veja o console para detalhes.");
     }
   };
@@ -243,21 +214,11 @@ export default function Caixa() {
       <div className="informacoes-financeiras">
         <div className="form-group-inline">
           <label className="form-label">Total de Devedores</label>
-          <input
-            className="form-input"
-            type="text"
-            value={totalDevedores.toFixed(2)}
-            readOnly
-          />
+          <input className="form-input" type="text" value={totalDevedores.toFixed(2)} readOnly />
         </div>
         <div className="form-group-inline">
           <label className="form-label">Total Pago</label>
-          <input
-            className="form-input"
-            type="text"
-            value={totalPago.toFixed(2)}
-            readOnly
-          />
+          <input className="form-input" type="text" value={totalPago.toFixed(2)} readOnly />
         </div>
       </div>
 
@@ -271,30 +232,15 @@ export default function Caixa() {
         tableStyle={{ minWidth: "50rem" }}
         dataKey="id"
       >
-
-        <Column
-          field="nome"
-          header="Nome do Cliente"
-          sortable
-          filter
-          filterPlaceholder="Filtrar por nome"
-        />
-        <Column
-          field="cpfCnpj"
-          header="CPF/CNPJ"
-          sortable
-          filter
-          filterPlaceholder="Filtrar CPF/CNPJ"
-        />
+        <Column field="nome" header="Nome do Cliente" sortable filter filterPlaceholder="Filtrar por nome" />
+        <Column field="cpfCnpj" header="CPF/CNPJ" sortable filter filterPlaceholder="Filtrar CPF/CNPJ" />
         <Column
           header="Valor Devido"
-          body={(rowData) => {
-            const ordensCliente = Array.isArray(ordens)
-              ? ordens.filter((ordem) => ordem.codigoCliente === rowData.id)
-              : [];
+          body={rowData => {
+            const ordensCliente = Array.isArray(ordens) ? ordens.filter(o => o.codigoCliente === rowData.id) : [];
             const totalDevido = ordensCliente.reduce((total, ordem) => {
               const totalPago = Array.isArray(pagamentos)
-                ? pagamentos.filter((pag) => pag.idOrdemDeServico === ordem.id)
+                ? pagamentos.filter(pag => pag.idOrdemDeServico === ordem.id)
                   .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0)
                 : 0;
               return total + (parseFloat(ordem.valorServico || 0) - totalPago);
@@ -313,7 +259,7 @@ export default function Caixa() {
             options={clientes}
             optionLabel="nome"
             optionValue="id"
-            onChange={(e) => selecionarCliente(e.value)}
+            onChange={e => selecionarCliente(e.value)}
             placeholder="Selecione o cliente"
             filter
             showClear
@@ -324,7 +270,7 @@ export default function Caixa() {
             options={clientes}
             optionLabel="cpfCnpj"
             optionValue="id"
-            onChange={(e) => selecionarCliente(e.value)}
+            onChange={e => selecionarCliente(e.value)}
             placeholder="Selecione pelo CPF/CNPJ"
             filter
             showClear
@@ -341,46 +287,15 @@ export default function Caixa() {
         showGridlines
         tableStyle={{ minWidth: "50rem" }}
         selection={selectedOrdens}
-        onSelectionChange={(e) => setSelectedOrdens(e.value)}
+        onSelectionChange={e => setSelectedOrdens(e.value)}
         dataKey="id"
       >
-
         <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
-        <Column
-          field="id"
-          header="Número O.S"
-          sortable
-          filter
-          filterPlaceholder="Filtrar por O.S"
-        />
-        <Column
-          field="valorServico"
-          header="Valor Total"
-          sortable
-          filter
-          filterPlaceholder="Filtrar valor"
-        />
-        <Column
-          field="descricaoServico"
-          header="Descrição"
-          sortable
-          filter
-          filterPlaceholder="Filtrar descrição"
-        />
-        <Column
-          field="categoria"
-          header="Categoria"
-          sortable
-          filter
-          filterPlaceholder="Filtrar categoria"
-        />
-        <Column
-          field="situacao"
-          header="Situação"
-          sortable
-          filter
-          filterPlaceholder="Filtrar situação"
-        />
+        <Column field="id" header="Número O.S" sortable filter filterPlaceholder="Filtrar por O.S" />
+        <Column field="valorServico" header="Valor Total" sortable filter filterPlaceholder="Filtrar valor" />
+        <Column field="descricaoServico" header="Descrição" sortable filter filterPlaceholder="Filtrar descrição" />
+        <Column field="categoria" header="Categoria" sortable filter filterPlaceholder="Filtrar categoria" />
+        <Column field="situacao" header="Situação" sortable filter filterPlaceholder="Filtrar situação" />
       </DataTable>
 
       <h3 className="section-title">O.S Pagas</h3>
@@ -392,71 +307,21 @@ export default function Caixa() {
         showGridlines
         tableStyle={{ minWidth: "50rem" }}
       >
-
-        <Column
-          field="idOrdemDeServico"
-          header="Número O.S"
-          sortable
-          filter
-          filterPlaceholder="Filtrar por O.S"
-        />
-        <Column
-          field="valorServico"
-          header="Valor Total"
-          sortable
-          filter
-          filterPlaceholder="Filtrar valor"
-        />
-        <Column
-          field="valorPago"
-          header="Valor Pago"
-          sortable
-          filter
-          filterPlaceholder="Filtrar valor pago"
-        />
-        <Column
-          field="emissao"
-          header="Emissão"
-          sortable
-          filter
-          filterPlaceholder="Filtrar por data"
-        />
-        <Column
-          field="numeroParcelas"
-          header="Nº de Parcelas"
-          sortable
-          filter
-          filterPlaceholder="Filtrar parcelas"
-        />
-        <Column
-          field="formaPagamento"
-          header="Forma de Pagamento"
-          sortable
-          filter
-          filterPlaceholder="Filtrar forma"
-        />
-        <Column
-          field="situacaoCaixa"
-          header="Situação"
-          sortable
-          filter
-          filterPlaceholder="Filtrar situação"
-        />
-        <Column 
-          field="observacoes"
-          header="Observações" />
+        <Column field="idOrdemDeServico" header="Número O.S" sortable filter filterPlaceholder="Filtrar por O.S" />
+        <Column field="valorServico" header="Valor Total" sortable filter filterPlaceholder="Filtrar valor" />
+        <Column field="valorPago" header="Valor Pago" sortable filter filterPlaceholder="Filtrar valor pago" />
+        <Column field="emissao" header="Emissão" sortable filter filterPlaceholder="Filtrar por data" />
+        <Column field="numeroParcelas" header="Nº de Parcelas" sortable filter filterPlaceholder="Filtrar parcelas" />
+        <Column field="formaPagamento" header="Forma de Pagamento" sortable filter filterPlaceholder="Filtrar forma" />
+        <Column field="situacaoCaixa" header="Situação" sortable filter filterPlaceholder="Filtrar situação" />
+        <Column field="observacoes" header="Observações" />
       </DataTable>
 
       <h3 className="section-title">Pagamento</h3>
       <div className="valores">
         <div className="form-group-inline">
           <label className="form-label">Saldo Devedor</label>
-          <input
-            className="form-input"
-            type="text"
-            value={saldoDevedor.toFixed(2)}
-            readOnly
-          />
+          <input className="form-input" type="text" value={saldoDevedor.toFixed(2)} readOnly />
         </div>
         <div className="form-group-inline">
           <label className="form-label">Valor a Pagar</label>
@@ -464,19 +329,12 @@ export default function Caixa() {
             className="form-input"
             type="number"
             value={formData.valorPago}
-            onChange={(e) =>
-              setFormData({ ...formData, valorPago: e.target.value })
-            }
+            onChange={e => setFormData({ ...formData, valorPago: e.target.value })}
           />
         </div>
         <div className="form-group-inline">
           <label className="form-label">Número de Parcelas</label>
-          <input
-            type="text"
-            className="form-input"
-            value={formData.numeroParcelas}
-            onChange={handleNumeroParcelasChange}
-          />
+          <input type="text" className="form-input" value={formData.numeroParcelas} onChange={handleNumeroParcelasChange} />
         </div>
         <div className="form-group-inline">
           <label>Forma de Pagamento</label>
@@ -488,7 +346,7 @@ export default function Caixa() {
               { label: "Crédito", value: "Crédito" },
               { label: "Débito", value: "Débito" },
             ]}
-            onChange={(e) => handleDropdownChange("formaPagamento", e.value)}
+            onChange={e => handleDropdownChange("formaPagamento", e.value)}
             placeholder="Selecione a Forma de Pagamento"
             filter
           />
@@ -499,9 +357,7 @@ export default function Caixa() {
             type="date"
             className="form-input"
             value={formData.pagamento}
-            onChange={(e) =>
-              setFormData({ ...formData, pagamento: e.target.value })
-            }
+            onChange={e => setFormData({ ...formData, pagamento: e.target.value })}
           />
         </div>
         <div className="form-group-inline">
@@ -510,9 +366,7 @@ export default function Caixa() {
             type="text"
             className="form-input"
             value={formData.observacoes}
-            onChange={(e) =>
-              setFormData({ ...formData, observacoes: e.target.value })
-            }
+            onChange={e => setFormData({ ...formData, observacoes: e.target.value })}
           />
         </div>
       </div>
