@@ -11,46 +11,46 @@ import "./App.css";
 import { locale, addLocale } from "primereact/api";
 
 addLocale('pt', {
-    startsWith: 'Começa com',
-    contains: 'Contém',
-    notContains: 'Não contém',
-    endsWith: 'Termina com',
-    equals: 'Igual',
-    notEquals: 'Diferente',
-    noFilter: 'Sem Filtro',
-    filter: 'Filtrar',
-    lt: 'Menor que',
-    lte: 'Menor ou igual a',
-    gt: 'Maior que',
-    gte: 'Maior ou igual a',
-    dateIs: 'Data é',
-    dateIsNot: 'Data não é',
-    dateBefore: 'Data antes de',
-    dateAfter: 'Data depois de',
-    clear: 'Limpar',
-    apply: 'Aplicar',
-    matchAll: 'Corresponde a todos',
-    matchAny: 'Corresponde a qualquer',
-    addRule: 'Adicionar Regra',
-    removeRule: 'Remover Regra',
-    accept: 'Sim',
-    reject: 'Não',
-    choose: 'Escolher',
-    upload: 'Upload',
-    cancel: 'Cancelar',
-    dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
-    dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
-    dayNamesMin: ["Do","Se","Te","Qa","Qi","Sx","Sa"],
-    monthNames: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
-    monthNamesShort: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
-    today: 'Hoje',
-    weekHeader: 'Sem',
-    firstDayOfWeek: 0,
-    dateFormat: 'dd/mm/yy',
-    weak: 'Fraco',
-    medium: 'Médio',
-    strong: 'Forte',
-    passwordPrompt: 'Digite uma senha'
+  startsWith: 'Começa com',
+  contains: 'Contém',
+  notContains: 'Não contém',
+  endsWith: 'Termina com',
+  equals: 'Igual',
+  notEquals: 'Diferente',
+  noFilter: 'Sem Filtro',
+  filter: 'Filtrar',
+  lt: 'Menor que',
+  lte: 'Menor ou igual a',
+  gt: 'Maior que',
+  gte: 'Maior ou igual a',
+  dateIs: 'Data é',
+  dateIsNot: 'Data não é',
+  dateBefore: 'Data antes de',
+  dateAfter: 'Data depois de',
+  clear: 'Limpar',
+  apply: 'Aplicar',
+  matchAll: 'Corresponde a todos',
+  matchAny: 'Corresponde a qualquer',
+  addRule: 'Adicionar Regra',
+  removeRule: 'Remover Regra',
+  accept: 'Sim',
+  reject: 'Não',
+  choose: 'Escolher',
+  upload: 'Upload',
+  cancel: 'Cancelar',
+  dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+  dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+  dayNamesMin: ["Do","Se","Te","Qa","Qi","Sx","Sa"],
+  monthNames: ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],
+  monthNamesShort: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
+  today: 'Hoje',
+  weekHeader: 'Sem',
+  firstDayOfWeek: 0,
+  dateFormat: 'dd/mm/yy',
+  weak: 'Fraco',
+  medium: 'Médio',
+  strong: 'Forte',
+  passwordPrompt: 'Digite uma senha'
 });
 
 locale('pt');
@@ -74,10 +74,6 @@ export default function Caixa() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setClientes([]);
-        setOrdens([]);
-        setPagamentos([]);
-
         const resClientes = await axios.get(`${API_URL}/clientes`);
         setClientes(Array.isArray(resClientes.data) ? resClientes.data : []);
 
@@ -85,8 +81,14 @@ export default function Caixa() {
         setOrdens(Array.isArray(resOrdens.data) ? resOrdens.data : []);
 
         const resPagamentos = await axios.get(`${API_URL}/caixa`);
-        setPagamentos(Array.isArray(resPagamentos.data) ? resPagamentos.data : []);
+        if (Array.isArray(resPagamentos.data)) {
+          setPagamentos(resPagamentos.data);
+        } else {
+          console.error("Pagamentos não é array:", resPagamentos.data);
+          setPagamentos([]);
+        }
       } catch (error) {
+        console.error("Erro ao buscar dados:", error);
         setClientes([]);
         setOrdens([]);
         setPagamentos([]);
@@ -97,10 +99,13 @@ export default function Caixa() {
   }, []);
 
   const selecionarCliente = (clienteId) => {
-    const cliente = Array.isArray(clientes)
-      ? clientes.find((cli) => cli.id === clienteId)
-      : null;
-    setClienteSelecionado(cliente || null);
+    if (!Array.isArray(clientes)) {
+      setClienteSelecionado(null);
+      setSelectedOrdens([]);
+      return;
+    }
+    const cliente = clientes.find((cli) => cli.id === clienteId) || null;
+    setClienteSelecionado(cliente);
     setSelectedOrdens([]);
   };
 
@@ -111,58 +116,52 @@ export default function Caixa() {
     }));
   };
 
-  const ordensDoCliente = clienteSelecionado && Array.isArray(ordens)
-    ? ordens.filter((ordem) => ordem.codigoCliente === clienteSelecionado.id)
+  const pagamentosArray = Array.isArray(pagamentos) ? pagamentos : [];
+  const ordensArray = Array.isArray(ordens) ? ordens : [];
+
+  const ordensDoCliente = clienteSelecionado
+    ? ordensArray.filter((ordem) => ordem.codigoCliente === clienteSelecionado.id)
     : [];
 
-  console.log("pagamentos antes do filtro:", pagamentos);
-  console.log("ordensDoCliente:", ordensDoCliente);
-  console.log("clienteSelecionado:", clienteSelecionado);
+  const ordensDoClienteArray = Array.isArray(ordensDoCliente) ? ordensDoCliente : [];
 
-  const pagamentosDoCliente = (clienteSelecionado && Array.isArray(pagamentos) && Array.isArray(ordensDoCliente))
-    ? pagamentos.filter((pag) =>
-        ordensDoCliente.some((ordem) => ordem.id === pag.idOrdemDeServico)
+  console.log("pagamentos tipo e valor:", typeof pagamentos, pagamentos);
+  console.log("ordensDoCliente tipo e valor:", typeof ordensDoCliente, ordensDoCliente);
+
+  const pagamentosDoCliente = clienteSelecionado && pagamentosArray.length && ordensDoClienteArray.length
+    ? pagamentosArray.filter((pag) =>
+        ordensDoClienteArray.some((ordem) => ordem.id === pag.idOrdemDeServico)
       )
     : [];
 
-  const ordensSemPagamento = Array.isArray(ordensDoCliente) && Array.isArray(pagamentosDoCliente)
-    ? ordensDoCliente.filter((ordem) => {
-        const totalPago = pagamentosDoCliente
-          .filter((pag) => pag.idOrdemDeServico === ordem.id)
-          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
-        return totalPago < parseFloat(ordem.valorServico || 0);
-      })
-    : [];
+  const ordensSemPagamento = ordensDoClienteArray.filter((ordem) => {
+    const totalPago = pagamentosDoCliente
+      .filter((pag) => pag.idOrdemDeServico === ordem.id)
+      .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+    return totalPago < parseFloat(ordem.valorServico || 0);
+  });
 
-  const saldoDevedor = Array.isArray(ordensDoCliente) && Array.isArray(pagamentosDoCliente)
-    ? ordensDoCliente.reduce((total, ordem) => {
-        const totalPago = pagamentosDoCliente
-          .filter((pag) => pag.idOrdemDeServico === ordem.id)
-          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+  const saldoDevedor = ordensDoClienteArray.reduce((total, ordem) => {
+    const totalPago = pagamentosDoCliente
+      .filter((pag) => pag.idOrdemDeServico === ordem.id)
+      .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+    return total + (parseFloat(ordem.valorServico || 0) - totalPago);
+  }, 0);
 
-        return total + (parseFloat(ordem.valorServico || 0) - totalPago);
-      }, 0)
-    : 0;
+  const totalDevedores = ordensArray.reduce((total, ordem) => {
+    const totalPago = pagamentosArray
+      .filter((pag) => pag.idOrdemDeServico === ordem.id)
+      .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+    return total + (parseFloat(ordem.valorServico || 0) - totalPago);
+  }, 0);
 
-  const totalDevedores = Array.isArray(ordens) && Array.isArray(pagamentos)
-    ? ordens.reduce((total, ordem) => {
-        const totalPago = pagamentos
-          .filter((pag) => pag.idOrdemDeServico === ordem.id)
-          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+  const totalPago = pagamentosArray.reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
 
-        return total + (parseFloat(ordem.valorServico || 0) - totalPago);
-      }, 0)
-    : 0;
-
-  const totalPago = Array.isArray(pagamentos)
-    ? pagamentos.reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0)
-    : 0;
-
-  const clientesDevedores = Array.isArray(clientes) && Array.isArray(ordens) && Array.isArray(pagamentos)
+  const clientesDevedores = Array.isArray(clientes) && ordensArray.length && pagamentosArray.length
     ? clientes.filter((cliente) => {
-        const ordensCliente = ordens.filter((ordem) => ordem.codigoCliente === cliente.id);
+        const ordensCliente = ordensArray.filter((ordem) => ordem.codigoCliente === cliente.id);
         const totalDevido = ordensCliente.reduce((total, ordem) => {
-          const totalPago = pagamentos
+          const totalPago = pagamentosArray
             .filter((pag) => pag.idOrdemDeServico === ordem.id)
             .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
           return total + (parseFloat(ordem.valorServico || 0) - totalPago);
@@ -173,12 +172,11 @@ export default function Caixa() {
 
   const handleNumeroParcelasChange = (e) => {
     const value = e.target.value;
-
     if (/^[\d/]*$/.test(value)) {
       if (!value.includes('/')) {
         setFormData((prev) => ({ ...prev, numeroParcelas: prev.numeroParcelas }));
       } else {
-        setFormData({ ...formData, numeroParcelas: value });
+        setFormData((prev) => ({ ...prev, numeroParcelas: value }));
       }
     } else {
       alert("Por favor, insira apenas números e o caractere '/'.");
@@ -235,6 +233,7 @@ export default function Caixa() {
         observacoes: "",
       });
     } catch (error) {
+      console.error("Erro ao confirmar pagamento:", error);
       alert("Erro ao confirmar pagamento. Veja o console para detalhes.");
     }
   };
@@ -292,14 +291,11 @@ export default function Caixa() {
         <Column
           header="Valor Devido"
           body={(rowData) => {
-            const ordensCliente = Array.isArray(ordens)
-              ? ordens.filter((ordem) => ordem.codigoCliente === rowData.id)
-              : [];
+            const ordensCliente = ordensArray.filter((ordem) => ordem.codigoCliente === rowData.id);
             const totalDevido = ordensCliente.reduce((total, ordem) => {
-              const totalPago = Array.isArray(pagamentos)
-                ? pagamentos.filter((pag) => pag.idOrdemDeServico === ordem.id)
-                  .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0)
-                : 0;
+              const totalPago = pagamentosArray
+                .filter((pag) => pag.idOrdemDeServico === ordem.id)
+                .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
               return total + (parseFloat(ordem.valorServico || 0) - totalPago);
             }, 0);
             return `R$ ${totalDevido.toFixed(2)}`;
@@ -523,7 +519,6 @@ export default function Caixa() {
         label="Confirmar Recebimento"
         icon="pi pi-check"
         onClick={handleConfirm}
-        disabled={!clienteSelecionado || selectedOrdens.length === 0}
       />
     </div>
   );
