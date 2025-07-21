@@ -33,7 +33,7 @@ function Caixa() {
       })
       .catch((err) => {
         console.error("Erro ao buscar caixa", err);
-        setPagamentos([]); // Garante que pagamentos seja array
+        setPagamentos([]);
       });
   }, []);
 
@@ -52,7 +52,12 @@ function Caixa() {
   return (
     <div className="container">
       <h2>Controle de Caixa</h2>
-      <DataTable value={Array.isArray(pagamentos) ? pagamentos : []} paginator rows={5} stripedRows>
+      <DataTable
+        value={Array.isArray(pagamentos) ? pagamentos : []}
+        paginator
+        rows={5}
+        stripedRows
+      >
         <Column field="id" header="ID" />
         <Column
           field="clienteId"
