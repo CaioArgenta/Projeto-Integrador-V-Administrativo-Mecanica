@@ -17,21 +17,24 @@ function Caixa() {
   useEffect(() => {
     axios.get(`${API_BASE}/clientes`)
       .then((res) => {
-        if (Array.isArray(res.data)) setClientes(res.data);
+        setClientes(Array.isArray(res.data) ? res.data : []);
       })
       .catch((err) => console.error("Erro ao buscar clientes", err));
 
     axios.get(`${API_BASE}/ordemDeServico`)
       .then((res) => {
-        if (Array.isArray(res.data)) setOrdens(res.data);
+        setOrdens(Array.isArray(res.data) ? res.data : []);
       })
       .catch((err) => console.error("Erro ao buscar ordens", err));
 
     axios.get(`${API_BASE}/caixa`)
       .then((res) => {
-        if (Array.isArray(res.data)) setPagamentos(res.data);
+        setPagamentos(Array.isArray(res.data) ? res.data : []);
       })
-      .catch((err) => console.error("Erro ao buscar caixa", err));
+      .catch((err) => {
+        console.error("Erro ao buscar caixa", err);
+        setPagamentos([]); // Garante que pagamentos seja array
+      });
   }, []);
 
   const getClienteNome = (id) => {
@@ -49,7 +52,7 @@ function Caixa() {
   return (
     <div className="container">
       <h2>Controle de Caixa</h2>
-      <DataTable value={pagamentos} paginator rows={5} stripedRows>
+      <DataTable value={Array.isArray(pagamentos) ? pagamentos : []} paginator rows={5} stripedRows>
         <Column field="id" header="ID" />
         <Column
           field="clienteId"
