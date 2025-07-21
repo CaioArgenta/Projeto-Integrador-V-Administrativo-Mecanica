@@ -55,6 +55,8 @@ addLocale('pt', {
 
 locale('pt');
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
+
 export default function Caixa() {
   const [clientes, setClientes] = useState([]);
   const [ordens, setOrdens] = useState([]);
@@ -70,14 +72,33 @@ export default function Caixa() {
   });
 
   useEffect(() => {
-    axios.get("http://localhost:4000/clientes").then((res) => setClientes(res.data));
-    axios.get("http://localhost:4000/ordemDeServico").then((res) => setOrdens(res.data));
-    axios.get("http://localhost:4000/caixa").then((res) => setPagamentos(res.data));
+    // Função para garantir que os dados sejam arrays
+    const fetchData = async () => {
+      try {
+        const resClientes = await axios.get(`${API_URL}/clientes`);
+        setClientes(Array.isArray(resClientes.data) ? resClientes.data : []);
+
+        const resOrdens = await axios.get(`${API_URL}/ordemDeServico`);
+        setOrdens(Array.isArray(resOrdens.data) ? resOrdens.data : []);
+
+        const resPagamentos = await axios.get(`${API_URL}/caixa`);
+        setPagamentos(Array.isArray(resPagamentos.data) ? resPagamentos.data : []);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+        setClientes([]);
+        setOrdens([]);
+        setPagamentos([]);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const selecionarCliente = (clienteId) => {
-    const cliente = clientes.find((cli) => cli.id === clienteId);
-    setClienteSelecionado(cliente);
+    const cliente = Array.isArray(clientes)
+      ? clientes.find((cli) => cli.id === clienteId)
+      : null;
+    setClienteSelecionado(cliente || null);
     setSelectedOrdens([]);
   };
 
@@ -88,52 +109,62 @@ export default function Caixa() {
     }));
   };
 
-  const ordensDoCliente = clienteSelecionado
+  const ordensDoCliente = clienteSelecionado && Array.isArray(ordens)
     ? ordens.filter((ordem) => ordem.codigoCliente === clienteSelecionado.id)
     : [];
 
-  const pagamentosDoCliente = clienteSelecionado
+  const pagamentosDoCliente = clienteSelecionado && Array.isArray(pagamentos)
     ? pagamentos.filter((pag) =>
         ordensDoCliente.some((ordem) => ordem.id === pag.idOrdemDeServico)
       )
     : [];
 
-  const ordensSemPagamento = ordensDoCliente.filter((ordem) => {
-    const totalPago = pagamentosDoCliente
-      .filter((pag) => pag.idOrdemDeServico === ordem.id)
-      .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+  const ordensSemPagamento = Array.isArray(ordensDoCliente) && Array.isArray(pagamentosDoCliente)
+    ? ordensDoCliente.filter((ordem) => {
+        const totalPago = pagamentosDoCliente
+          .filter((pag) => pag.idOrdemDeServico === ordem.id)
+          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
 
-    return totalPago < parseFloat(ordem.valorServico);
-  });
+        return totalPago < parseFloat(ordem.valorServico || 0);
+      })
+    : [];
 
-  const saldoDevedor = ordensDoCliente.reduce((total, ordem) => {
-    const totalPago = pagamentosDoCliente
-      .filter((pag) => pag.idOrdemDeServico === ordem.id)
-      .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+  const saldoDevedor = Array.isArray(ordensDoCliente) && Array.isArray(pagamentosDoCliente)
+    ? ordensDoCliente.reduce((total, ordem) => {
+        const totalPago = pagamentosDoCliente
+          .filter((pag) => pag.idOrdemDeServico === ordem.id)
+          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
 
-    return total + parseFloat(ordem.valorServico || 0) - totalPago;
-  }, 0);
+        return total + (parseFloat(ordem.valorServico || 0) - totalPago);
+      }, 0)
+    : 0;
 
-  const totalDevedores = ordens.reduce((total, ordem) => {
-    const totalPago = pagamentos
-      .filter((pag) => pag.idOrdemDeServico === ordem.id)
-      .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+  const totalDevedores = Array.isArray(ordens) && Array.isArray(pagamentos)
+    ? ordens.reduce((total, ordem) => {
+        const totalPago = pagamentos
+          .filter((pag) => pag.idOrdemDeServico === ordem.id)
+          .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
 
-    return total + (parseFloat(ordem.valorServico || 0) - totalPago);
-  }, 0);
+        return total + (parseFloat(ordem.valorServico || 0) - totalPago);
+      }, 0)
+    : 0;
 
-  const totalPago = pagamentos.reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+  const totalPago = Array.isArray(pagamentos)
+    ? pagamentos.reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0)
+    : 0;
 
-  const clientesDevedores = clientes.filter((cliente) => {
-    const ordensCliente = ordens.filter((ordem) => ordem.codigoCliente === cliente.id);
-    const totalDevido = ordensCliente.reduce((total, ordem) => {
-      const totalPago = pagamentos
-        .filter((pag) => pag.idOrdemDeServico === ordem.id)
-        .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
-      return total + (parseFloat(ordem.valorServico || 0) - totalPago);
-    }, 0);
-    return totalDevido > 0;
-  });
+  const clientesDevedores = Array.isArray(clientes) && Array.isArray(ordens) && Array.isArray(pagamentos)
+    ? clientes.filter((cliente) => {
+        const ordensCliente = ordens.filter((ordem) => ordem.codigoCliente === cliente.id);
+        const totalDevido = ordensCliente.reduce((total, ordem) => {
+          const totalPago = pagamentos
+            .filter((pag) => pag.idOrdemDeServico === ordem.id)
+            .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+          return total + (parseFloat(ordem.valorServico || 0) - totalPago);
+        }, 0);
+        return totalDevido > 0;
+      })
+    : [];
 
   const handleNumeroParcelasChange = (e) => {
     const value = e.target.value;
@@ -172,7 +203,7 @@ export default function Caixa() {
 
           const novoTotalPago = totalPago + parseFloat(formData.valorPago);
 
-          return axios.post(`http://localhost:4000/caixa`, {
+          return axios.post(`${API_URL}/caixa`, {
             idOrdemDeServico: ordem.id,
             valorServico: ordem.valorServico,
             valorPago: formData.valorPago,
@@ -188,8 +219,8 @@ export default function Caixa() {
 
       alert("Recebimento confirmado com sucesso!");
 
-      const pagamentosAtualizados = await axios.get("http://localhost:4000/caixa");
-      setPagamentos(pagamentosAtualizados.data);
+      const pagamentosAtualizados = await axios.get(`${API_URL}/caixa`);
+      setPagamentos(Array.isArray(pagamentosAtualizados.data) ? pagamentosAtualizados.data : []);
       setSelectedOrdens([]);
       setFormData({
         formaPagamento: "",
@@ -200,6 +231,7 @@ export default function Caixa() {
       });
     } catch (error) {
       console.error("Erro ao confirmar pagamento:", error);
+      alert("Erro ao confirmar pagamento. Veja o console para detalhes.");
     }
   };
 
@@ -257,11 +289,14 @@ export default function Caixa() {
         <Column
           header="Valor Devido"
           body={(rowData) => {
-            const ordensCliente = ordens.filter((ordem) => ordem.codigoCliente === rowData.id);
+            const ordensCliente = Array.isArray(ordens)
+              ? ordens.filter((ordem) => ordem.codigoCliente === rowData.id)
+              : [];
             const totalDevido = ordensCliente.reduce((total, ordem) => {
-              const totalPago = pagamentos
-                .filter((pag) => pag.idOrdemDeServico === ordem.id)
-                .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0);
+              const totalPago = Array.isArray(pagamentos)
+                ? pagamentos.filter((pag) => pag.idOrdemDeServico === ordem.id)
+                  .reduce((sum, pag) => sum + parseFloat(pag.valorPago || 0), 0)
+                : 0;
               return total + (parseFloat(ordem.valorServico || 0) - totalPago);
             }, 0);
             return `R$ ${totalDevido.toFixed(2)}`;
@@ -408,8 +443,8 @@ export default function Caixa() {
           filterPlaceholder="Filtrar situação"
         />
         <Column 
-        field="observacoes"
-        header="Observações" />
+          field="observacoes"
+          header="Observações" />
       </DataTable>
 
       <h3 className="section-title">Pagamento</h3>
@@ -482,13 +517,12 @@ export default function Caixa() {
         </div>
       </div>
 
-      <div className="form-buttons">
-        <Button
-          label="Confirmar Pagamento"
-          className="btn btn-confirm"
-          onClick={handleConfirm}
-        />
-      </div>
+      <Button
+        label="Confirmar Recebimento"
+        icon="pi pi-check"
+        onClick={handleConfirm}
+        disabled={!clienteSelecionado || selectedOrdens.length === 0}
+      />
     </div>
   );
 }
